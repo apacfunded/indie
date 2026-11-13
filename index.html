@@ -622,7 +622,7 @@ footer .brand img{width:22px;height:26px}
   .h2hero{padding-top:34px}
   .h2hero .ctas .btn{flex:1}
 }
-</style>
+.lempty{color:var(--dim);font-size:14px;padding:14px 20px;margin:0}</style>
 </head>
 <body>
 <div class="app">
@@ -661,7 +661,7 @@ footer .brand img{width:22px;height:26px}
   </div>
   <div class="wrap">
     <div class="wall" id="wall" aria-label="Games with coins on Indie"><div class="cols" id="cols"></div><i class="fx l"></i><i class="fx r"></i></div>
-    <p style="text-align:center;margin-top:12px;font-size:13px;color:var(--dim)">Example coins until launch.</p>
+    <p style="text-align:center;margin-top:12px;font-size:13px;color:var(--dim)">Pick a game to launch the first coin for it.</p>
   </div>
 
   <section>
@@ -681,7 +681,7 @@ footer .brand img{width:22px;height:26px}
           <div class="lab">Fees to developers</div>
           <div class="seg" id="seg"><button data-r="d" aria-pressed="true">1D</button><button data-r="m" aria-pressed="false">30D</button><button data-r="a" aria-pressed="false">All time</button></div>
           <div class="odo tnum" id="odo" aria-live="polite"></div>
-          <p style="margin-top:auto;font-size:13px;color:var(--dim)">Example data until launch.</p>
+          <p style="margin-top:auto;font-size:13px;color:var(--dim)">Live once $INDIE launches.</p>
         </div>
         <div class="tile2">
           <div class="th2"><b>Launch</b><a href="#launch">Open →</a></div>
@@ -744,7 +744,7 @@ footer .brand img{width:22px;height:26px}
         <div class="bsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="bq" type="search" placeholder="Search coins, games, devs" aria-label="Search coins"></div>
       </div>
       <div class="board" id="board"></div>
-      <p style="margin-top:14px;font-size:13px;color:var(--dim)">Example coins until launch.</p>
+      
     </div>
   </section>
 
@@ -754,7 +754,7 @@ footer .brand img{width:22px;height:26px}
 <!-- FEES -->
 <div class="view" data-v="fees" hidden>
   <div class="wrap">
-    <div class="vh"><h1>Fees</h1><p>Every creator fee routed to a game's developer, newest first. Example data until launch.</p></div>
+    <div class="vh"><h1>Fees</h1><p>Every creator fee routed to a game's developer, newest first.</p></div>
     <div class="tbl2" id="feetbl"><div class="trw hd"><span>Game</span><span>Developer</span><span class="c3">Coin</span><span class="c4">When</span><span>Amount</span></div></div>
   </div>
 </div>
@@ -817,7 +817,7 @@ footer .brand img{width:22px;height:26px}
 <!-- ANALYTICS -->
 <div class="view" data-v="analytics" hidden>
   <div class="wrap">
-    <div class="vh"><h1>Analytics</h1><p>How much Indie coins have sent to the people who make games. Example data until launch.</p></div>
+    <div class="vh"><h1>Analytics</h1><p>How much Indie coins have sent to the people who make games.</p></div>
     <div class="agrid">
       <div class="abox">
         <div class="lab">Fees to developers</div>
@@ -905,7 +905,7 @@ footer .brand img{width:22px;height:26px}
       </div>
       <div class="chain">
         <div><span>pump.fun program</span><code>6EF8…wF6P</code></div>
-        <div><span>Fee wallet</span><code>on each coin's pump.fun page</code></div>
+        <div><span>Fee wallet</span><a href="https://solscan.io/account/2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN" target="_blank" rel="noopener" title="2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN"><code>2vq5…76eN</code></a></div>
         <div><span>Memo on every launch</span><code>indie:&lt;app id&gt;</code></div>
         <div><span>$INDIE</span><code>launching soon</code></div>
       </div>
@@ -1042,6 +1042,7 @@ const art=(g,extra='')=>IMG[g.id]?`${pic(g)}<div class="glow" style="background:
 const statusPill=c=>c.curve>=100&&c.st==='claimed'?'<span class="pill g">Dev claimed</span>':c.st==='claimed'?'<span class="pill g">Dev claimed</span>':'<span class="pill a">Waiting for dev</span>';
 
 // stats
+COINS.length=0;
 const owedTotal=COINS.filter(c=>c.st==='wait').reduce((a,c)=>a+c.fees,0);
 const paidTotal=COINS.filter(c=>c.st==='claimed').reduce((a,c)=>a+c.fees,0);
 document.getElementById('t1').textContent=COINS.length;
@@ -1050,7 +1051,7 @@ document.getElementById('t3').textContent=usd(paidTotal);
 document.getElementById('wc').textContent=COINS.filter(c=>c.st==='wait').length;
 
 // sparkline (example)
-(function(){let y=70,pts=[];for(let i=0;i<=40;i++){y+= (Math.sin(i*1.7)*6)+(Math.random()*8-5.2);y=Math.max(12,Math.min(80,y));pts.push([i*10,y])}
+(function(){let y=70,pts=[];for(let i=0;i<=40;i++){pts.push([i*10,70])}
   const d=pts.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1].toFixed(1)).join(' ');
   document.getElementById('spk-l').setAttribute('d',d);document.getElementById('spk-a').setAttribute('d',d+' L400 92 L0 92 Z')})();
 
@@ -1079,7 +1080,7 @@ function renderBoard(){let list=COINS.slice();
   if(bq){const v=bq.toLowerCase();list=list.filter(c=>{const g=GAMES[c.g];return (g.t+' '+g.n+' '+g.dv).toLowerCase().includes(v)})}
   const b=document.getElementById('board');
   b.innerHTML=list.length?list.map(card).join('')+(bq?'':`<a class="card add" href="#launch"><div class="plus">+</div><b>Don't see your game?</b><span>Launch the first coin for it. Its devs start earning from the first trade.</span></a>`)
-   :`<div class="empty">No coin for “${esc(bq)}” yet.<br><a class="btn btn-cta" href="#launch" id="lnew">Launch the first one</a></div>`;
+   :bq?`<div class="empty">No coin for “${esc(bq)}” yet.<br><a class="btn btn-cta" href="#launch" id="lnew">Launch the first one</a></div>`:`<div class="empty">No coins launched yet. Be the first.<br><a class="btn btn-cta" href="#launch">Launch a coin</a></div>`;
   b.querySelectorAll('[data-c]').forEach(el=>el.onclick=()=>openD(COINS[+el.dataset.c]));
   const ln=document.getElementById('lnew');if(ln)ln.onclick=()=>{q.value=bq;renderLib()};
 }
@@ -1129,7 +1130,7 @@ renderLib();renderRev();
     let gs=GAMES.map((g,i)=>[g,i]).filter(([g])=>v?(g.n+' '+g.dv+' '+g.id).toLowerCase().includes(v):totals[GAMES.indexOf(g)]);
     gs.sort((a,b)=>((totals[b[1]]||{}).fees||0)-((totals[a[1]]||{}).fees||0));
     cres.innerHTML=gs.length?gs.slice(0,6).map(([g,i])=>{const t=totals[i];return `<button data-i="${i}" aria-pressed="${cg===i}"><span class="sq" style="background:${bgOf(g)}"><b>${ini(g.n)}</b></span><span class="nm"><b>${esc(g.n)}</b><span>${esc(g.dv)}${t?' · '+t.coins+' coin'+(t.coins>1?'s':''):' · no coins yet'}</span></span><span class="amt tnum">${t?(t.claimed?'Claimed':usd(t.fees)):'$0'}</span></button>`}).join('')
-      :`<p class="howto">No match. Try your Steam app ID.</p>`;
+      :v?`<p class="howto">No match. Try your Steam app ID.</p>`:`<p class="howto">Search for your game. Fees show here once a coin launches for it.</p>`;
     cres.querySelectorAll('button').forEach(b=>b.onclick=()=>{cg=+b.dataset.i;list();sum();
       document.getElementById('cs2').classList.remove('off');document.getElementById('cs1s').textContent='✓ '+GAMES[cg].n;document.getElementById('cs1s').className='ok'})}
   function howto(){document.getElementById('vcode').textContent=code;
@@ -1166,15 +1167,16 @@ const CK='<svg class="ck" viewBox="0 0 22 22" fill="currentColor" aria-label="Ve
 const AGES=['3m','11m','18m','31m','48m','2h','5h','1d','2d','3d'];
 const money=n=>'$'+Math.round(n).toLocaleString();
 const pcard=(c,k=0,tag='button')=>{const g=GAMES[c.g];return `<${tag} class="pc" data-c="${COINS.indexOf(c)}"><div class="pi">${pic(g)}<span class="pa">${AGES[(k+c.g)%AGES.length]}</span><span class="pw">${WAL}<span class="av" style="background:${bgOf(g)}">${ini(g.dv).slice(0,2)}</span><span class="pn">${esc(g.dv)}</span>${c.st==='claimed'?CK:''}</span></div><div class="pt"><b>${esc(g.n)}</b><small>${g.t}</small></div><div class="ps"><span>${usd(c.mc)}<small>MC</small></span><span>${money(c.fees)}<small>Sent</small></span></div></${tag}>`};
+const gcard=(g,k)=>`<div class="pc" data-g="${k}" role="button" tabindex="0"><div class="pi">${pic(g)}<span class="pw">${WAL}<span class="av" style="background:${bgOf(g)}">${ini(g.dv).slice(0,2)}</span><span class="pn">${esc(g.dv)}</span></span></div><div class="pt"><b>${esc(g.n)}</b><small>${g.t}</small></div><div class="ps"><span>No coin<small>yet</small></span><span>Launch<small>it</small></span></div></div>`;
 const bindCards=root=>root.querySelectorAll('.pc[data-c]').forEach(el=>el.onclick=()=>openD(COINS[+el.dataset.c]));
 
 // wall
 (function(){
   const main=`<a class="pc main" href="#home" onclick="document.querySelector('.indie').scrollIntoView({behavior:'smooth',block:'center'});return false"><div class="pi"><img src="pfp.png" alt=""><span class="pa">soon</span><span class="pw">${WAL}<span class="av" style="background:#2f8ff0">IN</span><span class="pn">Indie</span>${CK}</span></div><div class="pt"><b>Indie</b><small>INDIE</small></div><div class="ps"><span>Soon<small>MC</small></span><span>100%<small>to devs</small></span></div></a>`;
   const cols=document.getElementById('cols');const n=7;let html='';
-  for(let i=0;i<n;i++){const pick=COINS.filter((_,k)=>k%n===i||(k+3)%n===i);let items=pick.map((c,k)=>pcard(c,k+i,'div'));if(i===3)items.splice(1,0,main);
+  for(let i=0;i<n;i++){const pick=GAMES.map((g,k)=>[g,k]).filter(([_,k])=>k%n===i||(k+3)%n===i);let items=pick.map(([g,k])=>gcard(g,k));if(i===3)items.splice(1,0,main);
     const set=items.join('');html+=`<div class="col ${i%2?'down':''}"><div class="track" style="--d:${44+((i*7)%5)*8}s">${set}${set}</div></div>`}
-  cols.innerHTML=html;bindCards(cols);
+  cols.innerHTML=html;cols.querySelectorAll('.pc[data-g]').forEach(el=>el.onclick=()=>{sel=GAMES[+el.dataset.g];renderLib();renderRev(true);location.hash='launch'});
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)cols.querySelectorAll('.track').forEach(t=>t.style.animation='none');
 })();
 // rotating word
@@ -1184,15 +1186,15 @@ const bindCards=root=>root.querySelectorAll('.pc[data-c]').forEach(el=>el.onclic
 // odometers
 function mkOdo(odo){return v=>{const str='$'+v.toLocaleString();odo.innerHTML=[...str].map(ch=>/\d/.test(ch)?`<span class="dg"><i>${[...Array(10).keys()].map(d=>`<span>${d}</span>`).join('')}</i></span>`:`<span>${ch}</span>`).join('');
   const ds=[...str].filter(c=>/\d/.test(c));odo.querySelectorAll('.dg i').forEach((el,k)=>requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.transform=`translateY(-${+ds[k]}em)`})))}}
-const FEEV={d:2510,m:40280,a:COINS.reduce((a,c)=>a+c.fees,0)*4};
+const FEEV={d:0,m:0,a:0};
 [['seg','odo','d'],['seg2','odo2','m']].forEach(([s,o,def])=>{const set=mkOdo(document.getElementById(o));
   document.querySelectorAll('#'+s+' button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#'+s+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));set(FEEV[b.dataset.r]);if(s==='seg2')bars(b.dataset.r)});set(FEEV[def])});
 function bars(r){const n=r==='d'?24:30,el=document.getElementById('bars');const seed=r==='d'?1.3:r==='m'?2.1:0.7;
-  el.innerHTML=[...Array(n)].map((_,i)=>{const h=18+Math.abs(Math.sin(i*seed)*46)+(r==='a'?i*1.6:i%7*3);return `<i class="${i===n-1?'hi':''}" style="height:${Math.min(100,h)}%"></i>`}).join('')}
+  el.innerHTML=[...Array(n)].map((_,i)=>{const h=18+Math.abs(Math.sin(i*seed)*46)+(r==='a'?i*1.6:i%7*3);return `<i style="height:2%"></i>`}).join('')}
 bars('m');
 document.getElementById('kg').textContent=new Set(COINS.map(c=>c.g)).size;
 // launch tile
-(function(){const list=COINS.slice(0,5).map(c=>GAMES[c.g]);const box=document.getElementById('dchips');
+(function(){const list=GAMES.slice(0,5);const box=document.getElementById('dchips');
   box.innerHTML=list.map((g,i)=>`<span class="dchip ${i?'':'on'}"><span class="av" style="background:${bgOf(g)}">${ini(g.dv).slice(0,2)}</span>${esc(g.dv)}</span>`).join('');
   let i=0;setInterval(()=>{i=(i+1)%list.length;box.querySelectorAll('.dchip').forEach((c,k)=>c.classList.toggle('on',k===i));document.getElementById('bxg').textContent=list[i].n;document.getElementById('bxd').textContent=list[i].dv},2400)})();
 // fee events
@@ -1210,7 +1212,11 @@ const th=g=>`<span class="th">${pic(g)}</span>`;
   document.getElementById('lbd').innerHTML=byFee.filter(c=>c.st==='wait').slice(0,5).map((c,k)=>row(c,k,c=>`<b>${money(c.fees)}</b><span style="color:var(--amber)">waiting</span>`,1)).join('');
   document.querySelectorAll('.lrow').forEach(el=>el.onclick=()=>openD(COINS[+el.dataset.c]));
   const gc=g=>`<span class="gcell">${th(g)}<span style="min-width:0"><b>${esc(g.n)}</b><span>$${g.t}</span></span></span>`;
+  const none=t=>`<p class="lempty">${t}</p>`;
+  ['lbc','lbv','lbr','lbd','mini','feemini'].forEach(id=>{const el=document.getElementById(id);if(!el.innerHTML.trim())el.innerHTML=none('Nothing yet. Fills in once coins launch.')});
   document.getElementById('feetbl').insertAdjacentHTML('beforeend',EV.slice(0,28).map(e=>{const g=GAMES[e.c.g];return `<div class="trw">${gc(g)}<span>${esc(g.dv)}</span><span class="c3 dim">$${g.t}</span><span class="c4 dim">${ago(e.m)}</span><span class="amt">+${money(e.amt)}</span></div>`}).join(''));
+  if(!EV.length)document.getElementById('feetbl').insertAdjacentHTML('beforeend',none('No fees yet. They show up here as soon as the first coin trades.'));
+  if(!byFee.length)document.getElementById('antbl').insertAdjacentHTML('beforeend',none('No coins yet.'));
   document.getElementById('antbl').insertAdjacentHTML('beforeend',byFee.map(c=>{const g=GAMES[c.g];return `<div class="trw">${gc(g)}<span>${esc(g.dv)}</span><span class="c3">${usd(c.mc)}</span><span class="c4">${statusPill(c)}</span><span class="amt">${money(c.fees)}</span></div>`}).join(''));
 })();
 // router
@@ -1231,7 +1237,7 @@ function openD(c){last=document.activeElement;const g=GAMES[c.g];
   <div><span>Curve</span><b>${c.curve>=100?'Graduated':c.curve+'%'}</b></div><div><span>Launched</span><b>${ago(c.age)}</b></div></div>
   <div class="bar ${c.curve>=100?'done':''}"><i style="width:${c.curve}%"></i></div>
   <div class="dacts"><button class="btn btn-cta" data-soon="Opens at launch">Buy $${g.t} on pump.fun</button><button class="btn btn-ghost" id="dlaunch">Launch another coin for ${esc(g.n)}</button></div>
-  <p class="dnote">Example data until launch.</p></div>`;
+  </div>`;
   dr.querySelector('[data-soon]').onclick=e=>{e.target.textContent='Opens at launch';e.target.disabled=true};
   document.getElementById('dlaunch').onclick=()=>{sel=g;renderLib();renderRev(true);closeD();location.hash='launch'};
   dr.classList.add('open');sc.classList.add('open');dr.setAttribute('aria-hidden','false');document.getElementById('dx').focus()}
