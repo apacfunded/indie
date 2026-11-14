@@ -647,7 +647,7 @@ footer .brand img{width:22px;height:26px}
   <div class="tsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="navq" type="search" placeholder="Search games, coins or devs" aria-label="Search games, coins or devs"></div>
   <span class="sp"></span>
   <a class="btn btn-cta" href="#launch">Launch</a>
-  <button class="btn btn-ghost cw" data-soon="Opens at launch">Connect wallet</button>
+  <button class="btn btn-ghost cw" id="cwbtn">Connect wallet</button>
 </div>
 
 <main>
@@ -744,6 +744,7 @@ footer .brand img{width:22px;height:26px}
         <div class="bsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="bq" type="search" placeholder="Search coins, games, devs" aria-label="Search coins"></div>
       </div>
       <div class="board" id="board"></div>
+      <p style="margin-top:14px;font-size:14px;color:var(--dim)">Every Indie coin is created with the Indie fee wallet as creator. <a href="https://pump.fun/profile/2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN" target="_blank" rel="noopener" style="color:#7cc0ff">See them all on pump.fun</a></p>
       
     </div>
   </section>
@@ -856,17 +857,16 @@ footer .brand img{width:22px;height:26px}
             <div class="lf"><label for="nm">Coin name</label><input id="nm" maxlength="32"></div>
             <div class="lf"><label for="tk">Ticker</label><input id="tk" maxlength="10" style="text-transform:uppercase"></div>
           </div>
-          <div class="lf"><label for="ds">Description <span style="color:var(--dim);font-weight:400">optional</span></label><textarea id="ds" maxlength="200" placeholder="Why this game deserves a coin"></textarea></div>
           <div class="lf"><label>Image</label>
-            <div class="imgup"><div class="prev" id="prev"></div><div><label class="up" for="img">Upload image</label><input id="img" type="file" accept="image/*" hidden><small>PNG or JPG. Uses the game's art if empty.</small></div></div>
+            <div class="imgup"><div class="prev" id="prev"></div><div><small>Your coin uses the game's Steam cover and links to its Steam page.</small></div></div>
           </div>
 
           <div class="ph" style="margin-top:24px"><div class="n">3</div><h3>Dev buy</h3><small>optional, yours to keep</small></div>
           <div class="chips" id="chips">
             <button class="chip" data-v="0" aria-pressed="true">None</button>
+            <button class="chip" data-v="0.1" aria-pressed="false">0.1 SOL</button>
             <button class="chip" data-v="0.5" aria-pressed="false">0.5 SOL</button>
             <button class="chip" data-v="1" aria-pressed="false">1 SOL</button>
-            <button class="chip" data-v="2" aria-pressed="false">2 SOL</button>
           </div>
         </div>
 
@@ -1110,14 +1110,11 @@ function renderRev(reset){
   document.getElementById('rvn').textContent=(nm.value||sel.n)+' · for '+sel.n;
   document.getElementById('sdev').textContent=sel.dv;
   document.getElementById('sdb').textContent=dev?dev+' SOL':'None';
-  document.getElementById('spay').textContent='~'+(0.02+dev).toFixed(2)+' SOL';
+  document.getElementById('spay').textContent='~'+(0.02+dev).toFixed(2)+' SOL + network fee';
   document.getElementById('prev').innerHTML=imgURL?`<img src="${imgURL}" alt="">`:`<div class="art" style="height:100%">${art(sel)}</div>`;
 }
 q.addEventListener('input',renderLib);nm.addEventListener('input',()=>renderRev());tk.addEventListener('input',()=>renderRev());
-document.getElementById('img').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;if(imgURL)URL.revokeObjectURL(imgURL);imgURL=URL.createObjectURL(f);renderRev()});
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{dev=+c.dataset.v;document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===c));renderRev()});
-document.getElementById('go').onclick=()=>{const t=document.getElementById('toast');t.hidden=false;
-  t.textContent=`You're early. Launches open when $INDIE goes live. Your $${(tk.value||sel.t).toUpperCase()} coin for ${sel.n} will send every creator fee to ${sel.dv}.`};
 document.querySelectorAll('[data-soon]').forEach(b=>b.onclick=()=>{b.textContent=b.dataset.soon;b.disabled=true});
 renderLib();renderRev();
 
@@ -1243,6 +1240,61 @@ function openD(c){last=document.activeElement;const g=GAMES[c.g];
   dr.classList.add('open');sc.classList.add('open');dr.setAttribute('aria-hidden','false');document.getElementById('dx').focus()}
 function closeD(){dr.classList.remove('open');sc.classList.remove('open');dr.setAttribute('aria-hidden','true');last&&last.focus&&last.focus()}
 document.getElementById('dx').onclick=closeD;sc.onclick=closeD;addEventListener('keydown',e=>{if(e.key==='Escape')closeD()});
+</script>
+<script type="module">
+const FEE='2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN';
+const RPC='https://solana-rpc.publicnode.com';
+const KNOWN=new Set(GAMES.map(g=>g.id));
+let lib=null,wallet=null,pk=null;
+const $=id=>document.getElementById(id);
+const short=s=>s.slice(0,4)+'…'+s.slice(-4);
+async function load(){if(lib)return lib;
+  const [W,P,B]=await Promise.all([import('https://esm.sh/@solana/web3.js@1.98.0'),import('https://esm.sh/@pump-fun/pump-sdk@1.35.0'),import('https://esm.sh/bn.js@5.2.1')]);
+  lib={W,P,BN:B.default,conn:new W.Connection(RPC,'confirmed')};return lib}
+function provider(){return window.phantom?.solana||window.solflare||window.backpack?.solana||window.solana||null}
+async function connect(){const p=provider();
+  if(!p){window.open('https://phantom.app/','_blank');throw new Error('No Solana wallet found. Install Phantom or Solflare, then try again.')}
+  const r=await p.connect();wallet=p;pk=(r?.publicKey||p.publicKey).toString();
+  $('cwbtn').textContent=short(pk);return pk}
+$('cwbtn').onclick=()=>connect().catch(e=>alert(e.message||e));
+load();
+const toast=(html)=>{const t=$('toast');t.hidden=false;t.innerHTML=html};
+const go=$('go');
+go.onclick=async()=>{
+  const name=(nm.value||sel.n).trim().slice(0,32),sym=(tk.value||sel.t).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,10);
+  if(!sym){toast('Add a ticker first.');return}
+  go.disabled=true;const label=go.textContent;
+  try{
+    if(!pk){go.textContent='Connecting wallet…';await connect()}
+    go.textContent='Building transaction…';
+    const {W,P,BN,conn}=await load();
+    const user=new W.PublicKey(pk),creator=new W.PublicKey(FEE),mint=W.Keypair.generate();
+    const uri='https://indiee.xyz/meta/'+(KNOWN.has(sel.id)?sel.id:'indie')+'.json';
+    const global=await new P.OnlinePumpSdk(conn).fetchGlobal();
+    let ixs;
+    if(dev>0){const sol=new BN(Math.round(dev*1e9));
+      const amount=P.getBuyTokenAmountFromSolAmount({global,feeConfig:null,mintSupply:null,bondingCurve:null,amount:sol});
+      ixs=await P.PUMP_SDK.createV2AndBuyInstructions({global,mint:mint.publicKey,name,symbol:sym,uri,creator,user,amount,solAmount:sol,mayhemMode:false})}
+    else ixs=[await P.PUMP_SDK.createV2Instruction({mint:mint.publicKey,name,symbol:sym,uri,creator,user,mayhemMode:false}),
+      W.ComputeBudgetProgram.setComputeUnitLimit({units:200000}),W.ComputeBudgetProgram.setComputeUnitPrice({microLamports:300000})];
+    const {blockhash,lastValidBlockHeight}=await conn.getLatestBlockhash();
+    const tx=new W.VersionedTransaction(new W.TransactionMessage({payerKey:user,recentBlockhash:blockhash,instructions:ixs}).compileToV0Message());
+    const sim=await conn.simulateTransaction(tx,{sigVerify:false,replaceRecentBlockhash:true});
+    if(sim.value.err){const low=(sim.value.logs||[]).some(l=>/insufficient/i.test(l))||JSON.stringify(sim.value.err).includes('InsufficientFunds');
+      throw new Error(low?'Not enough SOL in your wallet for this launch.':'The launch would fail on-chain ('+JSON.stringify(sim.value.err)+'). Nothing was sent.')}
+    go.textContent='Approve in your wallet…';
+    const signed=await wallet.signTransaction(tx);signed.sign([mint]);
+    go.textContent='Sending…';
+    const sig=await conn.sendRawTransaction(signed.serialize(),{skipPreflight:true,maxRetries:5});
+    go.textContent='Confirming…';
+    const res=await conn.confirmTransaction({signature:sig,blockhash,lastValidBlockHeight},'confirmed');
+    if(res.value.err)throw new Error('The transaction failed on-chain. Check it on Solscan: '+sig);
+    const m=mint.publicKey.toString();
+    try{const k='indie_mine';const a=JSON.parse(localStorage.getItem(k)||'[]');a.unshift({m,sym,name,g:sel.id,t:Date.now()});localStorage.setItem(k,JSON.stringify(a.slice(0,50)))}catch(e){}
+    toast(`<b>$${sym} is live.</b> Every creator fee goes to the Indie fee wallet for ${sel.dv}.<br><a href="https://pump.fun/coin/${m}" target="_blank" rel="noopener" style="color:#7cc0ff">Open on pump.fun</a> · <a href="https://solscan.io/tx/${sig}" target="_blank" rel="noopener" style="color:#7cc0ff">View transaction</a>`);
+  }catch(e){toast(String(e?.message||e).replace(/^User rejected.*$/i,'You cancelled the transaction. Nothing was sent.'))}
+  finally{go.disabled=false;go.textContent=label}
+};
 </script>
 </body>
 </html>
