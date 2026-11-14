@@ -641,7 +641,7 @@ footer .brand img{width:22px;height:26px}
   </ul></nav>
   <a class="post" href="#launch" title="Launch a coin"><span>Launch a coin</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></a>
   <a class="xl" href="https://x.com/Indie_pad" target="_blank" rel="noopener" title="Follow @Indie_pad on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.8-6.3L6.4 22H3.3l7.3-8.3L1 2h6.3l4.4 5.8L18.9 2zm-1.1 18h1.7L6.3 3.9H4.5L17.8 20z"/></svg><span>@Indie_pad</span></a>
-  <a class="me" href="#home" title="$INDIE"><img src="pfp.png" alt=""><div><b>$INDIE</b><span>Launching soon</span></div></a>
+  <a class="me" href="#home" title="$INDIE"><img src="pfp.png" alt=""><div><b>$INDIE</b><span>Live on pump.fun</span></div></a>
 </aside>
 
 <div class="mainc">
@@ -703,13 +703,13 @@ footer .brand img{width:22px;height:26px}
       <div class="indie">
         <img class="big" src="logo.png" alt="">
         <div>
-          <h3>$INDIE <span class="pill main">Main coin</span><span class="pill live">Launching soon</span></h3>
+          <h3>$INDIE <span class="pill main">Main coin</span><span class="pill live">Live</span></h3>
           <p>The coin behind the Indie launchpad.</p>
-          <div class="ca"><span style="color:var(--dim)">CA</span><code id="ca">Launching soon on pump.fun</code><button id="copy" type="button">Copy</button></div>
+          <div class="ca"><span style="color:var(--dim)">CA</span><code id="ca">GfeN9BDPNAGPA9vSmDXHaZkQJ9yFs9i8gyme6oaYpump</code><button id="copy" type="button">Copy</button></div>
         </div>
         <div class="acts">
           <div class="spark"><svg viewBox="0 0 400 92" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4aa8f0" stop-opacity=".35"/><stop offset="1" stop-color="#4aa8f0" stop-opacity="0"/></linearGradient></defs><path id="spk-a" fill="url(#sf)"/><path id="spk-l" fill="none" stroke="#8fd3ff" stroke-width="3"/></svg></div>
-          <button class="btn btn-cta" data-soon="Opens at launch">Buy $INDIE</button>
+          <a class="btn btn-cta" href="https://pump.fun/coin/GfeN9BDPNAGPA9vSmDXHaZkQJ9yFs9i8gyme6oaYpump" target="_blank" rel="noopener">Buy $INDIE</a>
         </div>
       </div>
     </div>
@@ -910,7 +910,7 @@ footer .brand img{width:22px;height:26px}
         <div><span>pump.fun program</span><code>6EF8…wF6P</code></div>
         <div><span>Fee wallet</span><a href="https://solscan.io/account/2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN" target="_blank" rel="noopener" title="2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN"><code>2vq5…76eN</code></a></div>
         <div><span>Memo on every launch</span><code>indie:&lt;app id&gt;</code></div>
-        <div><span>$INDIE</span><code>launching soon</code></div>
+        <div><span>$INDIE</span><a href="https://pump.fun/coin/GfeN9BDPNAGPA9vSmDXHaZkQJ9yFs9i8gyme6oaYpump" target="_blank" rel="noopener"><code>GfeN…pump</code></a></div>
       </div>
     </div>
   </section>
@@ -948,7 +948,7 @@ footer .brand img{width:22px;height:26px}
 <footer>
   <div class="wrap">
     <span class="brand"><img src="logo.png" alt="">INDIE</span>
-    <span><a href="https://x.com/Indie_pad" target="_blank" rel="noopener" style="color:inherit">@Indie_pad on X</a> · $INDIE · launching soon on pump.fun · Not affiliated with Valve or Steam.</span>
+    <span><a href="https://x.com/Indie_pad" target="_blank" rel="noopener" style="color:inherit">@Indie_pad on X</a> · $INDIE · live on pump.fun · Not affiliated with Valve or Steam.</span>
   </div>
 </footer>
 </div>
@@ -1172,7 +1172,7 @@ const bindCards=root=>root.querySelectorAll('.pc[data-c]').forEach(el=>el.onclic
 
 // wall
 (function(){
-  const main=`<a class="pc main" href="#home" onclick="document.querySelector('.indie').scrollIntoView({behavior:'smooth',block:'center'});return false"><div class="pi"><img src="pfp.png" alt=""><span class="pa">soon</span><span class="pw">${WAL}<span class="av" style="background:#2f8ff0">IN</span><span class="pn">Indie</span>${CK}</span></div><div class="pt"><b>Indie</b><small>INDIE</small></div><div class="ps"><span>Soon<small>MC</small></span><span>100%<small>to devs</small></span></div></a>`;
+  const main=`<a class="pc main" href="https://pump.fun/coin/GfeN9BDPNAGPA9vSmDXHaZkQJ9yFs9i8gyme6oaYpump" target="_blank" rel="noopener"><div class="pi"><img src="pfp.png" alt=""><span class="pa">live</span><span class="pw">${WAL}<span class="av" style="background:#2f8ff0">IN</span><span class="pn">Indie</span>${CK}</span></div><div class="pt"><b>Indie</b><small>INDIE</small></div><div class="ps"><span>Live<small>pump.fun</small></span><span>100%<small>to devs</small></span></div></a>`;
   const cols=document.getElementById('cols');const n=7;let html='';
   for(let i=0;i<n;i++){const pick=GAMES.map((g,k)=>[g,k]).filter(([_,k])=>k%n===i||(k+3)%n===i);let items=pick.map(([g,k])=>gcard(g,k));if(i===3)items.splice(1,0,main);
     const set=items.join('');html+=`<div class="col ${i%2?'down':''}"><div class="track" style="--d:${44+((i*7)%5)*8}s">${set}${set}</div></div>`}
