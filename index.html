@@ -624,7 +624,7 @@ footer .brand img{width:22px;height:26px}
   .h2hero{padding-top:34px}
   .h2hero .ctas .btn{flex:1}
 }
-.lempty{color:var(--dim);font-size:14px;padding:14px 20px;margin:0}.indie,.pc.main,.side .me{display:none!important}</style>
+.lempty{color:var(--dim);font-size:14px;padding:14px 20px;margin:0}</style>
 </head>
 <body>
 <div class="app">
@@ -705,11 +705,11 @@ footer .brand img{width:22px;height:26px}
         <div>
           <h3>$INDIE <span class="pill main">Main coin</span><span class="pill live">Live</span></h3>
           <p>The coin behind the Indie launchpad.</p>
-          <div class="ca"><span style="color:var(--dim)">CA</span><code id="ca">E8n7AP5hZhSToMQSZc8asEC79UPdQ5Qj4ZF5Mbp4pump</code><button id="copy" type="button">Copy</button></div>
+          <div class="ca"><span style="color:var(--dim)">CA</span><code id="ca">HsP9oBcgzCsZvm4DkcAcHkL5ig3ojD54KpwayKQ1pump</code><button id="copy" type="button">Copy</button></div>
         </div>
         <div class="acts">
           <div class="spark"><svg viewBox="0 0 400 92" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4aa8f0" stop-opacity=".35"/><stop offset="1" stop-color="#4aa8f0" stop-opacity="0"/></linearGradient></defs><path id="spk-a" fill="url(#sf)"/><path id="spk-l" fill="none" stroke="#8fd3ff" stroke-width="3"/></svg></div>
-          <a class="btn btn-cta" href="https://pump.fun/coin/E8n7AP5hZhSToMQSZc8asEC79UPdQ5Qj4ZF5Mbp4pump" target="_blank" rel="noopener">Buy $INDIE</a>
+          <a class="btn btn-cta" href="https://pump.fun/coin/HsP9oBcgzCsZvm4DkcAcHkL5ig3ojD54KpwayKQ1pump" target="_blank" rel="noopener">Buy $INDIE</a>
         </div>
       </div>
     </div>
@@ -1172,7 +1172,7 @@ const bindCards=root=>root.querySelectorAll('.pc[data-c]').forEach(el=>el.onclic
 
 // wall
 (function(){
-  const main=`<a class="pc main" href="https://pump.fun/coin/E8n7AP5hZhSToMQSZc8asEC79UPdQ5Qj4ZF5Mbp4pump" target="_blank" rel="noopener"><div class="pi"><img src="pfp.png" alt=""><span class="pa">live</span><span class="pw">${WAL}<span class="av" style="background:#2f8ff0">IN</span><span class="pn">Indie</span>${CK}</span></div><div class="pt"><b>Indie</b><small>INDIE</small></div><div class="ps"><span>Live<small>pump.fun</small></span><span>100%<small>to devs</small></span></div></a>`;
+  const main=`<a class="pc main" href="https://pump.fun/coin/HsP9oBcgzCsZvm4DkcAcHkL5ig3ojD54KpwayKQ1pump" target="_blank" rel="noopener"><div class="pi"><img src="pfp.png" alt=""><span class="pa">live</span><span class="pw">${WAL}<span class="av" style="background:#2f8ff0">IN</span><span class="pn">Indie</span>${CK}</span></div><div class="pt"><b>Indie</b><small>INDIE</small></div><div class="ps"><span>Live<small>pump.fun</small></span><span>100%<small>to devs</small></span></div></a>`;
   const cols=document.getElementById('cols');const n=7;let html='';
   for(let i=0;i<n;i++){const pick=GAMES.map((g,k)=>[g,k]).filter(([_,k])=>k%n===i||(k+3)%n===i);let items=pick.map(([g,k])=>gcard(g,k));if(i===3)items.splice(1,0,main);
     const set=items.join('');html+=`<div class="col ${i%2?'down':''}"><div class="track" style="--d:${44+((i*7)%5)*8}s">${set}${set}</div></div>`}
