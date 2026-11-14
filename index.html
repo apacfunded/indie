@@ -1046,12 +1046,13 @@ const statusPill=c=>c.curve>=100&&c.st==='claimed'?'<span class="pill g">Dev cla
 
 // stats
 COINS.length=0;
-const owedTotal=COINS.filter(c=>c.st==='wait').reduce((a,c)=>a+c.fees,0);
-const paidTotal=COINS.filter(c=>c.st==='claimed').reduce((a,c)=>a+c.fees,0);
+function renderStats(){
 document.getElementById('t1').textContent=COINS.length;
-document.getElementById('t2').textContent=usd(owedTotal);
-document.getElementById('t3').textContent=usd(paidTotal);
-document.getElementById('wc').textContent=COINS.filter(c=>c.st==='wait').length;
+document.getElementById('t2').textContent='—';
+document.getElementById('t3').textContent='—';
+document.getElementById('wc').textContent=COINS.length;
+document.getElementById('kg')&&(document.getElementById('kg').textContent=new Set(COINS.map(c=>GAMES[c.g].id)).size);}
+renderStats();
 
 // sparkline (example)
 (function(){let y=70,pts=[];for(let i=0;i<=40;i++){pts.push([i*10,70])}
@@ -1070,7 +1071,7 @@ function card(c){const g=GAMES[c.g];
    <div class="cb">
     <div class="t"><b>$${g.t}</b><span>${ago(c.age)}</span></div>
     <div class="dv">pays <b>${esc(g.dv)}</b></div>
-    <div class="mets"><div><span>Market cap</span><b class="tnum">${usd(c.mc)}</b></div><div><span>Fees to dev</span><b class="g tnum">${usd(c.fees)}</b></div></div>
+    <div class="mets"><div><span>Market cap</span><b class="tnum">${usd(c.mc)}</b></div><div><span>Fees go to</span><b class="g">fee wallet</b></div></div>
     <div><div class="bar ${c.curve>=100?'done':''}"><i style="width:${c.curve}%"></i></div></div>
     <div class="bmeta"><span>${c.curve>=100?'Graduated':c.curve+'% to graduation'}</span>${statusPill(c)}</div>
    </div></button>`}
@@ -1097,7 +1098,7 @@ let sel=GAMES[0],dev=0,imgURL=null;
 const q=document.getElementById('q'),lib=document.getElementById('lib');
 document.getElementById('libcount').textContent=GAMES.length+'+ games';
 function renderLib(){const v=q.value.trim().toLowerCase();
-  let list=GAMES.filter(g=>!v||g.n.toLowerCase().includes(v)||g.dv.toLowerCase().includes(v)||String(g.id)===v);
+  let list=GAMES.filter(g=>!g.hidden).filter(g=>!v||g.n.toLowerCase().includes(v)||g.dv.toLowerCase().includes(v)||String(g.id)===v);
   if(!list.length&&/^\d{2,8}$/.test(v))list=[{id:+v,t:'GAME',n:'Steam app '+v,dv:'its developer on Steam',h:210,custom:1}];
   lib.innerHTML=list.length?list.map(g=>`<button class="tile" role="listitem" data-id="${g.id}" aria-pressed="${g.id===sel.id}"><div class="art">${art(g)}</div><span class="ck">✓</span><div class="m"><b>${esc(g.n)}</b><span>${esc(g.dv)}</span></div></button>`).join('')
    :`<div class="empty" style="grid-column:1/-1">No game matches “${esc(q.value)}”. Paste its Steam app ID instead.</div>`;
@@ -1192,33 +1193,35 @@ const FEEV={d:0,m:0,a:0};
 function bars(r){const n=r==='d'?24:30,el=document.getElementById('bars');const seed=r==='d'?1.3:r==='m'?2.1:0.7;
   el.innerHTML=[...Array(n)].map((_,i)=>{const h=18+Math.abs(Math.sin(i*seed)*46)+(r==='a'?i*1.6:i%7*3);return `<i style="height:2%"></i>`}).join('')}
 bars('m');
-document.getElementById('kg').textContent=new Set(COINS.map(c=>c.g)).size;
+
 // launch tile
 (function(){const list=GAMES.slice(0,5);const box=document.getElementById('dchips');
   box.innerHTML=list.map((g,i)=>`<span class="dchip ${i?'':'on'}"><span class="av" style="background:${bgOf(g)}">${ini(g.dv).slice(0,2)}</span>${esc(g.dv)}</span>`).join('');
   let i=0;setInterval(()=>{i=(i+1)%list.length;box.querySelectorAll('.dchip').forEach((c,k)=>c.classList.toggle('on',k===i));document.getElementById('bxg').textContent=list[i].n;document.getElementById('bxd').textContent=list[i].dv},2400)})();
 // fee events
-const EV=COINS.flatMap((c,i)=>[0,1,2].map(k=>({c,amt:Math.max(4,Math.round(c.fees*[.08,.05,.03][k])),m:c.age+k*41+i*3}))).sort((a,b)=>a.m-b.m);
+const EV=[];
 const th=g=>`<span class="th">${pic(g)}</span>`;
-(function(){
+const FEETBL=document.getElementById('feetbl').innerHTML,ANTBL=document.getElementById('antbl').innerHTML;
+function renderData(){document.getElementById('feetbl').innerHTML=FEETBL;document.getElementById('antbl').innerHTML=ANTBL;
   document.getElementById('mini').innerHTML=COINS.slice().sort((a,b)=>b.hot-a.hot).slice(0,4).map((c,k)=>pcard(c,k)).join('');bindCards(document.getElementById('mini'));
   const frow=e=>{const g=GAMES[e.c.g];return `<div class="rrow"><span class="av" style="background:${bgOf(g)}">${ini(g.dv).slice(0,2)}</span><span class="t"><b>${esc(g.dv)}</b><span>$${g.t} · ${ago(e.m)}</span></span><span class="v">+${money(e.amt)}</span></div>`};
   document.getElementById('feemini').innerHTML=EV.slice(0,5).map(frow).join('');
   const row=(c,k,right,round)=>{const g=GAMES[c.g];return `<button class="lrow" data-c="${COINS.indexOf(c)}"><span class="n">${k+1}</span>${round?`<span class="th rd" style="background:${bgOf(g)}"><b>${ini(g.dv).slice(0,2)}</b></span>`:th(g)}<span class="t"><b>${esc(round?g.dv:g.n)}</b><span>${round?esc(g.n):'$'+g.t+' · '+esc(g.dv)}</span></span><span class="v">${right(c)}</span></button>`};
   const byFee=COINS.slice().sort((a,b)=>b.fees-a.fees);
-  document.getElementById('lbc').innerHTML=COINS.slice().sort((a,b)=>b.mc-a.mc).slice(0,5).map((c,k)=>row(c,k,c=>`<b>${usd(c.mc)}</b><span>${money(c.fees)} sent</span>`)).join('');
-  document.getElementById('lbv').innerHTML=byFee.slice(0,5).map((c,k)=>row(c,k,c=>`<b>${money(c.fees)}</b><span style="color:var(--dim)">${c.st==='claimed'?'claimed':'held'}</span>`,1)).join('');
+  document.getElementById('lbc').innerHTML=COINS.slice().sort((a,b)=>b.mc-a.mc).slice(0,5).map((c,k)=>row(c,k,c=>`<b>${usd(c.mc)}</b><span>${c.curve>=100?'graduated':c.curve+'% curve'}</span>`)).join('');
+  document.getElementById('lbv').innerHTML=COINS.slice().sort((a,b)=>b.mc-a.mc).slice(0,5).map((c,k)=>row(c,k,c=>`<b>${usd(c.mc)}</b><span style="color:var(--dim)">fees held</span>`,1)).join('');
   document.getElementById('lbr').innerHTML=EV.slice(0,5).map((e,k)=>row(e.c,k,()=>`<b style="color:var(--green)">+${money(e.amt)}</b><span style="color:var(--dim)">${ago(e.m)}</span>`)).join('');
-  document.getElementById('lbd').innerHTML=byFee.filter(c=>c.st==='wait').slice(0,5).map((c,k)=>row(c,k,c=>`<b>${money(c.fees)}</b><span style="color:var(--amber)">waiting</span>`,1)).join('');
+  document.getElementById('lbd').innerHTML=COINS.slice().sort((a,b)=>b.mc-a.mc).filter(c=>c.st==='wait').slice(0,5).map((c,k)=>row(c,k,c=>`<b>${usd(c.mc)}</b><span style="color:var(--amber)">waiting for dev</span>`,1)).join('');
   document.querySelectorAll('.lrow').forEach(el=>el.onclick=()=>openD(COINS[+el.dataset.c]));
   const gc=g=>`<span class="gcell">${th(g)}<span style="min-width:0"><b>${esc(g.n)}</b><span>$${g.t}</span></span></span>`;
   const none=t=>`<p class="lempty">${t}</p>`;
   ['lbc','lbv','lbr','lbd','mini','feemini'].forEach(id=>{const el=document.getElementById(id);if(!el.innerHTML.trim())el.innerHTML=none('Nothing yet. Fills in once coins launch.')});
   document.getElementById('feetbl').insertAdjacentHTML('beforeend',EV.slice(0,28).map(e=>{const g=GAMES[e.c.g];return `<div class="trw">${gc(g)}<span>${esc(g.dv)}</span><span class="c3 dim">$${g.t}</span><span class="c4 dim">${ago(e.m)}</span><span class="amt">+${money(e.amt)}</span></div>`}).join(''));
   if(!EV.length)document.getElementById('feetbl').insertAdjacentHTML('beforeend',none('No fees yet. They show up here as soon as the first coin trades.'));
-  if(!byFee.length)document.getElementById('antbl').insertAdjacentHTML('beforeend',none('No coins yet.'));
-  document.getElementById('antbl').insertAdjacentHTML('beforeend',byFee.map(c=>{const g=GAMES[c.g];return `<div class="trw">${gc(g)}<span>${esc(g.dv)}</span><span class="c3">${usd(c.mc)}</span><span class="c4">${statusPill(c)}</span><span class="amt">${money(c.fees)}</span></div>`}).join(''));
-})();
+  const byFee2=COINS.slice().sort((a,b)=>b.mc-a.mc);if(!byFee2.length)document.getElementById('antbl').insertAdjacentHTML('beforeend',none('No coins yet.'));
+  document.getElementById('antbl').insertAdjacentHTML('beforeend',byFee2.map(c=>{const g=GAMES[c.g];return `<div class="trw">${gc(g)}<span>${esc(g.dv)}</span><span class="c3">${usd(c.mc)}</span><span class="c4">${statusPill(c)}</span><span class="amt">${c.curve>=100?'Graduated':c.curve+'%'}</span></div>`}).join(''));
+}
+renderData();
 // router
 const VIEWS=['home','explore','fees','claim','analytics','launch','docs'];
 function route(){let v=location.hash.slice(1);if(!VIEWS.includes(v))v='home';
@@ -1234,11 +1237,11 @@ function openD(c){last=document.activeElement;const g=GAMES[c.g];
   <div class="dbody"><div style="display:flex;gap:6px;margin-bottom:8px">${statusPill(c)}${c.curve>=100?'<span class="pill g">Graduated</span>':''}</div>
   <h3>$${g.t}</h3><div class="sub">Every creator fee goes to <b style="color:var(--hi);font-weight:500">${esc(g.dv)}</b></div>
   <div class="dkv"><div><span>Market cap</span><b class="tnum">${usd(c.mc)}</b></div><div><span>Fees to dev</span><b class="g tnum">${usd(c.fees)}</b></div>
-  <div><span>Curve</span><b>${c.curve>=100?'Graduated':c.curve+'%'}</b></div><div><span>Launched</span><b>${ago(c.age)}</b></div></div>
+  <div><span>Curve</span><b>${c.curve>=100?'Graduated':c.curve+'%'}</b></div><div><span>${c.mint?'CA':'Launched'}</span><b>${c.mint?c.mint.slice(0,4)+'…'+c.mint.slice(-4):ago(c.age)}</b></div></div>
   <div class="bar ${c.curve>=100?'done':''}"><i style="width:${c.curve}%"></i></div>
-  <div class="dacts"><button class="btn btn-cta" data-soon="Opens at launch">Buy $${g.t} on pump.fun</button><button class="btn btn-ghost" id="dlaunch">Launch another coin for ${esc(g.n)}</button></div>
+  <div class="dacts">${c.mint?`<a class="btn btn-cta" href="https://pump.fun/coin/${c.mint}" target="_blank" rel="noopener">Buy $${g.t} on pump.fun</a>`:`<button class="btn btn-cta" data-soon="Opens at launch">Buy $${g.t} on pump.fun</button>`}<button class="btn btn-ghost" id="dlaunch">Launch another coin for ${esc(g.n)}</button></div>
   </div>`;
-  dr.querySelector('[data-soon]').onclick=e=>{e.target.textContent='Opens at launch';e.target.disabled=true};
+  dr.querySelector('[data-soon]')&&(dr.querySelector('[data-soon]').onclick=e=>{e.target.textContent='Opens at launch';e.target.disabled=true});
   document.getElementById('dlaunch').onclick=()=>{sel=g;renderLib();renderRev(true);closeD();location.hash='launch'};
   dr.classList.add('open');sc.classList.add('open');dr.setAttribute('aria-hidden','false');document.getElementById('dx').focus()}
 function closeD(){dr.classList.remove('open');sc.classList.remove('open');dr.setAttribute('aria-hidden','true');last&&last.focus&&last.focus()}
@@ -1261,6 +1264,32 @@ async function connect(){const p=provider();
   $('cwbtn').textContent=short(pk);return pk}
 $('cwbtn').onclick=()=>connect().catch(e=>alert(e.message||e));
 load();
+async function loadCoins(){
+  try{const {W,conn}=await load();
+    let list=[];try{list=await fetch('/coins.json?'+Math.floor(Date.now()/6e4)).then(r=>r.json())}catch(e){}
+    try{(JSON.parse(localStorage.getItem('indie_mine')||'[]')).forEach(x=>{if(!list.some(y=>y.mint===x.m))list.push({mint:x.m,at:new Date(x.t).toISOString()})})}catch(e){}
+    if(!list.length)return;
+    let solUsd=0;try{solUsd=(await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd').then(r=>r.json())).solana.usd}catch(e){}
+    if(!solUsd)try{const j=await fetch('https://lite-api.jup.ag/price/v3?ids=So11111111111111111111111111111111111111112').then(r=>r.json());solUsd=j.So11111111111111111111111111111111111111112.usdPrice}catch(e){}
+    const PROG=new W.PublicKey('6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P');
+    const mints=list.map(x=>new W.PublicKey(x.mint));
+    const curves=mints.map(m=>W.PublicKey.findProgramAddressSync([new TextEncoder().encode('bonding-curve'),m.toBytes()],PROG)[0]);
+    const [mi,ci]=await Promise.all([conn.getMultipleParsedAccounts(mints),conn.getMultipleAccountsInfo(curves)]);
+    const add=[];
+    list.forEach((x,i)=>{const c=ci[i];if(!c)return;const d=c.data;const rd=o=>Number(new DataView(d.buffer,d.byteOffset+o,8).getBigUint64(0,true));
+      const creator=new W.PublicKey(d.slice(49,81)).toString();if(creator!==FEE)return;
+      const md=mi.value[i]?.data?.parsed?.info?.extensions?.find(e=>e.extension==='tokenMetadata')?.state||{};
+      const app=+((md.uri||'').match(/meta\/(\d+)\.json/)||[])[1];
+      const base=GAMES.find(g=>g.id===app)||{id:app||0,n:'Steam game',dv:'its developer',h:210};
+      const g={...base,t:(md.symbol||base.t||'COIN').toUpperCase(),hidden:true};GAMES.push(g);
+      const vTok=rd(8),vSol=rd(16),realTok=rd(24),realSol=rd(32),done=d[48]===1;
+      const mcSol=(vSol/1e9)/(vTok/1e6)*1e9;
+      add.push({g:GAMES.length-1,mint:x.mint,name:md.name,mc:Math.round(mcSol*(solUsd||0)),fees:0,curve:done?100:Math.max(0,Math.min(99,Math.round((1-realTok/793.1e12)*100))),age:x.at?Math.max(1,Math.round((Date.now()-Date.parse(x.at))/6e4)):1,st:'wait',hot:realSol})});
+    if(!add.length)return;
+    COINS.push(...add);renderStats();renderBoard();renderData();
+    document.getElementById('mini').innerHTML=COINS.slice().sort((a,b)=>b.hot-a.hot).slice(0,4).map((c,k)=>pcard(c,k)).join('');bindCards(document.getElementById('mini'));
+  }catch(e){console.warn('coins',e)}}
+loadCoins();
 const toast=(html)=>{const t=$('toast');t.hidden=false;t.innerHTML=html};
 const go=$('go');
 go.onclick=async()=>{
