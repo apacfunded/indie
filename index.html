@@ -624,7 +624,7 @@ footer .brand img{width:22px;height:26px}
   .h2hero{padding-top:34px}
   .h2hero .ctas .btn{flex:1}
 }
-.lempty{color:var(--dim);font-size:14px;padding:14px 20px;margin:0}</style>
+.lempty{color:var(--dim);font-size:14px;padding:14px 20px;margin:0}.indie,.pc.main,.side .me{display:none!important}</style>
 </head>
 <body>
 <div class="app">
@@ -684,7 +684,7 @@ footer .brand img{width:22px;height:26px}
           <div class="lab">Fees to developers</div>
           <div class="seg" id="seg"><button data-r="d" aria-pressed="true">1D</button><button data-r="m" aria-pressed="false">30D</button><button data-r="a" aria-pressed="false">All time</button></div>
           <div class="odo tnum" id="odo" aria-live="polite"></div>
-          <p style="margin-top:auto;font-size:13px;color:var(--dim)">Live once $INDIE launches.</p>
+          
         </div>
         <div class="tile2">
           <div class="th2"><b>Launch</b><a href="#launch">Open →</a></div>
@@ -910,7 +910,6 @@ footer .brand img{width:22px;height:26px}
         <div><span>pump.fun program</span><code>6EF8…wF6P</code></div>
         <div><span>Fee wallet</span><a href="https://solscan.io/account/2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN" target="_blank" rel="noopener" title="2vq57WXMUUv3151LdbqBoZAG6fxr9F7oRcvjnirw76eN"><code>2vq5…76eN</code></a></div>
         <div><span>Memo on every launch</span><code>indie:&lt;app id&gt;</code></div>
-        <div><span>$INDIE</span><a href="https://pump.fun/coin/GfeN9BDPNAGPA9vSmDXHaZkQJ9yFs9i8gyme6oaYpump" target="_blank" rel="noopener"><code>GfeN…pump</code></a></div>
       </div>
     </div>
   </section>
@@ -924,7 +923,7 @@ footer .brand img{width:22px;height:26px}
         <details open><summary>Who gets the money?</summary><p>The developer of the game the coin was launched for. Every creator fee from every coin for that game collects in one escrow tied to its Steam app ID.</p></details>
         <details><summary>What if the developer never claims?</summary><p>The fees stay in the escrow until they do. Nobody else can take them, including us and the launcher.</p></details>
         <details><summary>How does a developer prove it's their game?</summary><p>They post a one-time code somewhere only the real developer controls, like a news post on the game's Steam page or its official X account.</p></details>
-        <details><summary>What's $INDIE?</summary><p>$INDIE is the main coin for the Indie launchpad itself. It's the flagship of everything launched here.</p></details>
+        
         <details><summary>Does the launcher earn anything?</summary><p>No creator fees. You can keep an optional dev buy like any pump.fun launch.</p></details>
         <details><summary>Is this made by Valve or the game's studio?</summary><p>No. Indie isn't affiliated with Valve, Steam or any studio. Names are only used to say who the fees are for.</p></details>
       </div>
@@ -948,7 +947,7 @@ footer .brand img{width:22px;height:26px}
 <footer>
   <div class="wrap">
     <span class="brand"><img src="logo.png" alt="">INDIE</span>
-    <span><a href="https://x.com/Indie_pad" target="_blank" rel="noopener" style="color:inherit">@Indie_pad on X</a> · $INDIE · live on pump.fun · Not affiliated with Valve or Steam.</span>
+    <span><a href="https://x.com/Indie_pad" target="_blank" rel="noopener" style="color:inherit">@Indie_pad on X</a> · Not affiliated with Valve or Steam.</span>
   </div>
 </footer>
 </div>
@@ -1158,7 +1157,7 @@ renderLib();renderRev();
     if(cg==null){t.textContent='Start by finding your game in step 1.';return}
     if(!linkOk()){t.textContent='Add the link to your post with the code in step 2.';return}
     if(!walOk()){t.textContent='Add the Solana wallet you want to be paid to in step 3.';return}
-    t.textContent='Claims open when $INDIE goes live. Your details are filled in, so you can submit right away then.'};
+    t.textContent='Claims are reviewed by the Indie team. Your details are filled in.'};
   cq.addEventListener('input',list);list();howto();sum();
 })();
 
@@ -1289,7 +1288,7 @@ async function loadCoins(){
     COINS.push(...add);renderStats();renderBoard();renderData();
     document.getElementById('mini').innerHTML=COINS.slice().sort((a,b)=>b.hot-a.hot).slice(0,4).map((c,k)=>pcard(c,k)).join('');bindCards(document.getElementById('mini'));
   }catch(e){console.warn('coins',e)}}
-loadCoins();
+/* coins hidden */
 const toast=(html)=>{const t=$('toast');t.hidden=false;t.innerHTML=html};
 const go=$('go');
 go.onclick=async()=>{
